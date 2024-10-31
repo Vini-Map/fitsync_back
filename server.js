@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Usar as rotas
-app.use('/api/users', userRoutes);
+app.use('/api', userRoutes);
 
 // A conexão com o banco de dados deve ser verificada antes de iniciar o servidor
 connection.connect((err) => {

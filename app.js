@@ -1,23 +1,18 @@
-const express = require('express');
-const sequelize = require('./config/db');
-require('dotenv').config();
+const app = require('./app'); // Importa o app configurado no app.js
+const connection = require('./src/config/bDados'); // Certifique-se de que o caminho está correto
 
-// Importar rotas
-const userRoutes = require('./src/routes/userRoutes');
-
-const app = express();
-app.use(express.json()); // Middleware para interpretar JSON
-
-// Sincronizar os modelos com o banco de dados MySQL
-sequelize.sync()
-  .then(() => console.log('Modelos sincronizados com o banco de dados MySQL'))
-  .catch((err) => console.log('Erro ao sincronizar com o MySQL:', err));
-
-// Usar as rotas
-app.use('/api/users', userRoutes);
-
-// Iniciar o servidor
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+
+// A conexão com o banco de dados deve ser verificada antes de iniciar o servidor
+connection.connect((err) => {
+    if (err) {
+        console.error('Erro ao conectar ao banco de dados: ' + err.stack);
+        return;
+    }
+    console.log('Conectado ao banco de dados MySQL como id ' + connection.threadId);
+    
+    // Inicie o servidor somente após a conexão ser bem-sucedida
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta ${PORT}`);
+    });
 });

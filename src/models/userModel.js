@@ -1,36 +1,20 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/bDados');
+const connection = require('../config/bDados'); // Importa a conexão com o banco de dados
 
-// Definindo o modelo de usuário
-const User = sequelize.define('User', {
-  // Campo "name" (nome do usuário)
-  name: {
-    type: DataTypes.STRING, // Tipo de dado: String
-    allowNull: false,        // Não pode ser nulo
-    validate: {
-      notEmpty: true         // Validação: não pode ser uma string vazia
-    }
+const User = {
+  // Método para criar um novo usuário
+  create: (userData, callback) => {
+    const { email, password } = userData; // Desestrutura os dados do usuário
+    const query = 'INSERT INTO usuarios (email, senha) VALUES (?, ?)'; // Prepare a query
+
+    connection.query(query, [email, password], (error, results) => {
+      if (error) {
+        return callback(error); // Retorna o erro se houver
+      }
+      callback(null, results.insertId); // Retorna o ID do novo usuário
+    });
   },
-  // Campo "email" (e-mail do usuário)
-  email: {
-    type: DataTypes.STRING,  // Tipo de dado: String
-    allowNull: false,        // Não pode ser nulo
-    unique: true,            // O e-mail deve ser único (não pode repetir no banco)
-    validate: {
-      isEmail: true          // Validação: precisa ter o formato de e-mail
-    }
-  },
-  // Campo "password" (senha do usuário)
-  password: {
-    type: DataTypes.STRING,  // Tipo de dado: String (senha criptografada)
-    allowNull: false,        // Não pode ser nulo
-    validate: {
-      len: [6, 100]          // Validação: a senha deve ter entre 6 e 100 caracteres
-    }
-  }
-}, {
-  // Opções extras, como timestamps para createdAt e updatedAt
-  timestamps: true
-});
+
+  // Adicione outros métodos como find, update, delete, se necessário
+};
 
 module.exports = User;

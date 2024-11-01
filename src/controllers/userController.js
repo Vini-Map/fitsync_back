@@ -1,23 +1,33 @@
-// controllers/userController.js
 const bcrypt = require('bcrypt');
 const connection = require('../config/bDados');
+const User = require('../models/userModel');
 
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { email, password } = req.body; // Remove a referência ao 'name'
 
     try {
+        if (!password) {
+            throw new Error('Senha é obrigatória');
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        const query = 'INSERT INTO usuarios (email, senha) VALUES (?, ?)';
-        connection.query(query, [email, hashedPassword], (error, results) => {
+        const userData = { email, password: hashedPassword }; // Removido 'name'
+
+        User.create(userData, (error, userId) => {
             if (error) {
-                return res.status(500).json({ message: 'Erro ao cadastrar usuário', error });
+                console.error('Erro ao cadastrar usuário:', error);
+                return res.status(500).json({ message: 'Erro ao cadastrar usuário', error: error.message });
             }
-            res.status(201).json({ message: 'Usuário cadastrado com sucesso!', userId: results.insertId });
+            res.status(201).json({ message: 'Usuário cadastrado com sucesso!', userId });
         });
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao cadastrar usuário', error });
+        console.error('Erro ao cadastrar usuário:', error);
+        res.status(500).json({ message: 'Erro ao cadastrar usuário', error: error.message });
     }
 };
+
+
+
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;

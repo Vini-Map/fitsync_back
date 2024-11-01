@@ -1,18 +1,15 @@
-const app = require('./app'); // Importa o app configurado no app.js
-const connection = require('./src/config/bDados'); // Certifique-se de que o caminho está correto
+// app.js
+const express = require('express');
+const connection = require('./src/config/bDados'); // Configuração do MySQL
+require('dotenv').config();
 
-const PORT = process.env.PORT || 5000;
+// Importar rotas
+const userRoutes = require('./src/routes/userRoute');
 
-// A conexão com o banco de dados deve ser verificada antes de iniciar o servidor
-connection.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao banco de dados: ' + err.stack);
-        return;
-    }
-    console.log('Conectado ao banco de dados MySQL como id ' + connection.threadId);
-    
-    // Inicie o servidor somente após a conexão ser bem-sucedida
-    app.listen(PORT, () => {
-        console.log(`Servidor rodando na porta ${PORT}`);
-    });
-});
+const app = express();
+app.use(express.json()); // Middleware para interpretar JSON
+
+// Usar as rotas
+app.use('/api/users', userRoutes);
+
+module.exports = app; // Exporta a instância do app

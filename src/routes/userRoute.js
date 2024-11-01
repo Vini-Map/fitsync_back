@@ -21,10 +21,12 @@ router.post('/register',
     registerUser
 );
 
+
+
 router.post('/login', 
     [
         body('email').isEmail().withMessage('E-mail inválido'),
-        body('password').notEmpty().withMessage('Senha é obrigatória')
+        body('password').notEmpty().withMessage('Senha é obrigatória') // Mantenha 'password'
     ],
     validateRequest,
     loginUser

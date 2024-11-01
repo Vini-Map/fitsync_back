@@ -3,7 +3,7 @@ const connection = require('../config/bDados');
 const User = require('../models/userModel');
 
 const registerUser = async (req, res) => {
-    const { email, password } = req.body; // Remove a referência ao 'name'
+    const { email, password } = req.body; 
 
     try {
         if (!password) {

@@ -11,7 +11,7 @@ const registerUser = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userData = { email, password: hashedPassword }; // Removido 'name'
+        const userData = { email, password: hashedPassword };
 
         User.create(userData, (error, userId) => {
             if (error) {
